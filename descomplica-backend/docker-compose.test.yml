@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app-test:
+    container_name: descomplica-backend-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: test
+    env_file:
+      - .env.test
+    environment:
+      NODE_ENV: test
+      DATABASE_URL: postgres://postgres:password123@db-test:5432/alunos-db-test
+    command: >
+      sh -c "
+      echo '🚀 Running E2E tests...' &&
+      npx prisma migrate deploy &&
+      npm run prisma:generate:test &&
+      npm run test:e2e
+      "
+    depends_on:
+      db-test:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  db-test:
+    image: postgres:15
+    container_name: alunos-db-test
+    env_file:
+      - .env.test
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - '5433:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+
+volumes:
+  pgdata_test:
