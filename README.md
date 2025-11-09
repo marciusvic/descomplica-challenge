@@ -55,6 +55,7 @@ Cobertura completa de funcionalidades incluindo criação, listagem, filtros, at
 ### Frontend (Testes Unitários)
 ```bash
 cd descomplica-frontend
+npm install
 npm test              # Modo watch
 npm run test:ui       # Interface visual
 npm run test:coverage # Relatório de cobertura
