@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { StudentCard } from "./student-card.";
 import type { Student } from "@/types/student";
+import { StudentCard } from "./student-card.";
 
 vi.mock("@/context/stundet-context", () => ({
   useStudent: () => ({
@@ -16,8 +16,8 @@ describe("StudentCard", () => {
     name: "João Silva",
     cpf: "111.111.111-11",
     email: "joao@example.com",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     deletedAt: null,
   };
 
