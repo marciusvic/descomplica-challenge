@@ -8,11 +8,11 @@ services:
       dockerfile: Dockerfile
       args:
         NODE_ENV: test
-    env_file:
-      - .env.test
     environment:
       NODE_ENV: test
-      DATABASE_URL: postgres://postgres:password123@db-test:5432/alunos-db-test
+      DATABASE_URL: postgresql://postgres:password123@db-test:5432/alunos-db-test?schema=public
+      JWT_SECRET: test-secret-key
+      JWT_EXPIRES_IN: 1d
     command: >
       sh -c "
       echo '🚀 Running E2E tests...' &&
@@ -30,12 +30,10 @@ services:
   db-test:
     image: postgres:15
     container_name: alunos-db-test
-    env_file:
-      - .env.test
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: alunos-db-test
     ports:
       - '5433:5432'
     healthcheck:
