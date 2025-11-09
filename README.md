@@ -150,5 +150,3 @@ Todos na mesma rede Docker com comunicação interna.
 - CI/CD com GitHub Actions
 - Sistema de logging estruturado
 - Histórico de alterações (audit log)
-- Internacionalização (i18n)
-- Rate limiting e caching (Redis)
