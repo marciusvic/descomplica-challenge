@@ -20,11 +20,12 @@ cd descomplica-challenge
 
 **2. Crie o arquivo `.env`**
 ```env
-DATABASE_URL=postgresql://postgres:postgres@db:5432/alunos
+DATABASE_URL=postgres://postgres:password123@db:5432/alunos-db
 PORT=3000
 POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=alunos
+POSTGRES_PASSWORD=password123
+POSTGRES_DB=alunos-db
+
 NODE_ENV=development
 ```
 
