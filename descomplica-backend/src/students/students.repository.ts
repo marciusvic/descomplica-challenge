@@ -97,11 +97,19 @@ export class StudentsRepository {
       );
     }
 
-    const { cpf, ...updateData } = data;
+    if (data.cpf && data.cpf !== student.cpf) {
+      const existingStudent = await this.prisma.student.findUnique({
+        where: { cpf: data.cpf },
+      });
+
+      if (existingStudent && existingStudent.id !== id) {
+        throw new ConflictException('CPF já está em uso por outro estudante');
+      }
+    }
 
     return await this.prisma.student.update({
       where: { id },
-      data: updateData,
+      data,
     });
   }
 

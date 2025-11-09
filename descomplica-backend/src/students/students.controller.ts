@@ -188,14 +188,14 @@ export class StudentsController {
 
   @ApiBody({
     type: CreateStudentDto,
-    description:
-      'Dados para atualização de um estudante (CPF não pode ser alterado)',
+    description: 'Dados para atualização de um estudante',
     examples: {
       example1: {
         summary: 'Exemplo de atualização de estudante',
         value: {
           name: 'Marco Fisbhen Atualizado',
           email: 'marco.updated@descomplica.com',
+          cpf: '111.222.333-44',
         },
       },
     },
@@ -203,7 +203,7 @@ export class StudentsController {
   @ApiOperation({
     summary: 'Atualiza um estudante existente',
     description:
-      'Endpoint para atualizar os dados de um estudante existente. CPF não pode ser alterado.',
+      'Endpoint para atualizar os dados de um estudante existente, incluindo o CPF.',
   })
   @ApiResponse({
     status: 200,
@@ -217,6 +217,10 @@ export class StudentsController {
   @ApiResponse({
     status: 404,
     description: 'Estudante não encontrado.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'CPF já está em uso por outro estudante.',
   })
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: Partial<CreateStudentDto>) {

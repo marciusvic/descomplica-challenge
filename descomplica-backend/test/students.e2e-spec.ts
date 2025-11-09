@@ -167,7 +167,7 @@ describe('StudentsController (e2e)', () => {
       expect(response.body.cpf).toBe('111.111.111-11');
     });
 
-    it('12. should NOT update CPF (should remain the same)', async () => {
+    it('12. should update CPF successfully', async () => {
       const response = await request(app.getHttpServer())
         .patch(`/students/${student1Id}`)
         .send({
@@ -175,7 +175,16 @@ describe('StudentsController (e2e)', () => {
         })
         .expect(200);
 
-      expect(response.body.cpf).toBe('111.111.111-11');
+      expect(response.body.cpf).toBe('999.999.999-99');
+    });
+
+    it('12b. should return 409 when updating CPF to an existing one', async () => {
+      await request(app.getHttpServer())
+        .patch(`/students/${student1Id}`)
+        .send({
+          cpf: '222.222.222-22',
+        })
+        .expect(409);
     });
 
     it('13. should return 404 when updating non-existent student', async () => {
