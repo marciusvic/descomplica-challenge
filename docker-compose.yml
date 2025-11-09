@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: alunos-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-alunos}
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - descomplica-network
+
+  backend:
+    container_name: descomplica-backend
+    build:
+      context: ./descomplica-backend
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        NODE_ENV: development
+    ports:
+      - '3000:3000'
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: ${DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET:-your-secret-key}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+    volumes:
+      - ./descomplica-backend:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - descomplica-network
+
+  frontend:
+    container_name: descomplica-frontend
+    build:
+      context: ./descomplica-frontend
+    ports:
+      - '3001:80'
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - descomplica-network
+
+volumes:
+  pgdata:
+
+networks:
+  descomplica-network:
+    driver: bridge
