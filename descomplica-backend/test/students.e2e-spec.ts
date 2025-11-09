@@ -8,7 +8,6 @@ describe('StudentsController (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
-  // IDs dos estudantes criados durante os testes
   let student1Id: string;
   let student2Id: string;
   let student3Id: string;
@@ -22,7 +21,6 @@ describe('StudentsController (e2e)', () => {
     prisma = app.get(PrismaService);
     await app.init();
 
-    // Limpar banco apenas uma vez no início
     await prisma.student.deleteMany({});
   });
 
@@ -166,7 +164,7 @@ describe('StudentsController (e2e)', () => {
 
       expect(response.body.name).toBe('Marco Fisbhen Atualizado');
       expect(response.body.email).toBe('marco.updated@descomplica.com');
-      expect(response.body.cpf).toBe('111.111.111-11'); // CPF não deve mudar
+      expect(response.body.cpf).toBe('111.111.111-11');
     });
 
     it('12. should NOT update CPF (should remain the same)', async () => {
@@ -177,7 +175,7 @@ describe('StudentsController (e2e)', () => {
         })
         .expect(200);
 
-      expect(response.body.cpf).toBe('111.111.111-11'); // CPF original mantido
+      expect(response.body.cpf).toBe('111.111.111-11');
     });
 
     it('13. should return 404 when updating non-existent student', async () => {
@@ -203,8 +201,8 @@ describe('StudentsController (e2e)', () => {
 
       expect(response.body).toHaveProperty('activeStudents');
       expect(response.body).toHaveProperty('deletedStudents');
-      expect(response.body.activeStudents.length).toBe(2); // Apenas 2 ativos
-      expect(response.body.deletedStudents.length).toBe(1); // 1 deletado
+      expect(response.body.activeStudents.length).toBe(2);
+      expect(response.body.deletedStudents.length).toBe(1);
       expect(
         response.body.activeStudents.find((s: any) => s.id === student2Id),
       ).toBeUndefined();
@@ -248,8 +246,8 @@ describe('StudentsController (e2e)', () => {
 
       expect(response.body).toHaveProperty('activeStudents');
       expect(response.body).toHaveProperty('deletedStudents');
-      expect(response.body.activeStudents.length).toBe(3); // Todos os 3 ativos novamente
-      expect(response.body.deletedStudents.length).toBe(0); // Nenhum deletado
+      expect(response.body.activeStudents.length).toBe(3);
+      expect(response.body.deletedStudents.length).toBe(0);
     });
 
     it('21. should retrieve reactivated student by id', async () => {
