@@ -11,8 +11,15 @@ import {
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { FindStudentsDto } from './dto/find-students.dto';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Students')
 @Controller('students')
 export class StudentsController {
   constructor(private studentsService: StudentsService) {}
@@ -36,17 +43,27 @@ export class StudentsController {
     description: 'Endpoint para criar um novo estudante no sistema.',
   })
   @ApiResponse({
-    status: 200,
+    status: 201,
     description: 'Estudante criado com sucesso.',
     type: CreateStudentDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Dados inválidos.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'CPF já cadastrado.',
   })
   @Post()
   create(@Body() data: CreateStudentDto) {
     return this.studentsService.create(data);
   }
+
   @ApiOperation({
     summary: 'Busca estudantes',
-    description: 'Endpoint para buscar estudantes com filtros opcionais.',
+    description:
+      'Endpoint para buscar estudantes com filtros opcionais. Retorna estudantes separados em ativos e deletados.',
   })
   @ApiQuery({
     name: 'name',
@@ -71,20 +88,67 @@ export class StudentsController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Lista de estudantes encontrados.',
-    type: [CreateStudentDto],
-    example: [
-      {
-        name: 'Marco Fisbhen',
-        cpf: '123.456.789-00',
-        email: 'marco@descomplica.com',
+    description:
+      'Lista de estudantes encontrados, separados em ativos e deletados.',
+    schema: {
+      type: 'object',
+      properties: {
+        activeStudents: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              name: { type: 'string' },
+              cpf: { type: 'string' },
+              email: { type: 'string' },
+              createdAt: { type: 'string' },
+              updatedAt: { type: 'string' },
+              deletedAt: { type: 'string', nullable: true },
+            },
+          },
+        },
+        deletedStudents: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: { type: 'string' },
+              name: { type: 'string' },
+              cpf: { type: 'string' },
+              email: { type: 'string' },
+              createdAt: { type: 'string' },
+              updatedAt: { type: 'string' },
+              deletedAt: { type: 'string' },
+            },
+          },
+        },
       },
-      {
-        name: 'Rodrigo Bosisio',
-        cpf: '987.654.321-00',
-        email: 'rodrigo@descomplica.com',
-      },
-    ],
+    },
+    example: {
+      activeStudents: [
+        {
+          id: '3de085bb-1da4-4e11-8044-3403309bba87',
+          name: 'Rodrigo Bosisio',
+          cpf: '987.654.321-00',
+          email: 'rodrigo@descomplica.com',
+          createdAt: '2025-11-09T14:17:59.138Z',
+          updatedAt: '2025-11-09T14:17:59.138Z',
+          deletedAt: null,
+        },
+      ],
+      deletedStudents: [
+        {
+          id: '980ff8bb-7c56-43d1-93fd-ce61933334ac',
+          name: 'Marco Fisbhen Atualizado',
+          cpf: '123.456.789-00',
+          email: 'marco@descomplica.com',
+          createdAt: '2025-11-09T14:17:59.134Z',
+          updatedAt: '2025-11-09T14:23:14.096Z',
+          deletedAt: '2025-11-09T14:23:14.095Z',
+        },
+      ],
+    },
   })
   @Get()
   findAll(@Query() query: FindStudentsDto) {
@@ -100,9 +164,13 @@ export class StudentsController {
     description: 'Estudante encontrado com sucesso.',
     type: CreateStudentDto,
     example: {
+      id: '980ff8bb-7c56-43d1-93fd-ce61933334ac',
       name: 'Marco Fisbhen',
       cpf: '123.456.789-00',
       email: 'marco@descomplica.com',
+      createdAt: '2025-11-09T14:17:59.134Z',
+      updatedAt: '2025-11-09T14:17:59.134Z',
+      deletedAt: null,
     },
   })
   @ApiResponse({
@@ -120,21 +188,22 @@ export class StudentsController {
 
   @ApiBody({
     type: CreateStudentDto,
-    description: 'Dados para atualização de um estudante',
+    description:
+      'Dados para atualização de um estudante (CPF não pode ser alterado)',
     examples: {
       example1: {
         summary: 'Exemplo de atualização de estudante',
         value: {
           name: 'Marco Fisbhen Atualizado',
-          cpf: '123.456.789-00',
-          email: 'marco@descomplica.com',
+          email: 'marco.updated@descomplica.com',
         },
       },
     },
   })
   @ApiOperation({
     summary: 'Atualiza um estudante existente',
-    description: 'Endpoint para atualizar os dados de um estudante existente.',
+    description:
+      'Endpoint para atualizar os dados de um estudante existente. CPF não pode ser alterado.',
   })
   @ApiResponse({
     status: 200,
@@ -178,8 +247,8 @@ export class StudentsController {
   }
 
   @ApiOperation({
-    summary: 'Remove um estudante',
-    description: 'Endpoint para remover um estudante do sistema(soft delete).',
+    summary: 'Remove um estudante (soft delete)',
+    description: 'Endpoint para remover um estudante do sistema (soft delete).',
   })
   @ApiResponse({
     status: 200,
