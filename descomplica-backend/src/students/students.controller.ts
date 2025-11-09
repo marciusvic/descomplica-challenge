@@ -11,7 +11,7 @@ import {
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { FindStudentsDto } from './dto/find-students.dto';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('students')
 export class StudentsController {
@@ -47,6 +47,27 @@ export class StudentsController {
   @ApiOperation({
     summary: 'Busca estudantes',
     description: 'Endpoint para buscar estudantes com filtros opcionais.',
+  })
+  @ApiQuery({
+    name: 'name',
+    required: false,
+    type: String,
+    description: 'Nome do estudante',
+    example: 'Marco Fisbhen',
+  })
+  @ApiQuery({
+    name: 'cpf',
+    required: false,
+    type: String,
+    description: 'CPF do estudante',
+    example: '123.456.789-00',
+  })
+  @ApiQuery({
+    name: 'email',
+    required: false,
+    type: String,
+    description: 'Email do estudante',
+    example: 'marco@descomplica.com',
   })
   @ApiResponse({
     status: 200,
@@ -131,6 +152,29 @@ export class StudentsController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() data: Partial<CreateStudentDto>) {
     return this.studentsService.update(id, data);
+  }
+
+  @ApiOperation({
+    summary: 'Reativa um estudante deletado',
+    description:
+      'Endpoint para reativar um estudante que foi removido (soft delete).',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Estudante reativado com sucesso.',
+    type: CreateStudentDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'ID do aluno é obrigatório ou aluno já está ativo.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Estudante não encontrado.',
+  })
+  @Patch(':id/reactivate')
+  reactivate(@Param('id') id: string) {
+    return this.studentsService.reactivate(id);
   }
 
   @ApiOperation({

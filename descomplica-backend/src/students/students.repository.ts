@@ -21,14 +21,12 @@ export class StudentsRepository {
 
   async findMany(params: { where?: Prisma.StudentWhereInput }) {
     const { where } = params;
-    const baseWhere: Prisma.StudentWhereInput = { deletedAt: null };
-    const finalWhere = where ? { AND: [where, baseWhere] } : baseWhere;
-    return this.prisma.student.findMany({ where: finalWhere });
+    return this.prisma.student.findMany({ where });
   }
 
   async findById(id: string) {
     return this.prisma.student.findFirst({
-      where: { id, deletedAt: null },
+      where: { id },
     });
   }
 
@@ -48,6 +46,14 @@ export class StudentsRepository {
     return this.prisma.student.update({
       where,
       data: { deletedAt: new Date() },
+    });
+  }
+
+  async reactivate(params: { where: Prisma.StudentWhereUniqueInput }) {
+    const { where } = params;
+    return this.prisma.student.update({
+      where,
+      data: { deletedAt: null },
     });
   }
 }
