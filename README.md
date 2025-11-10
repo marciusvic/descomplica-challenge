@@ -4,6 +4,14 @@ Repositório do desafio técnico. Descrição completa em `Desafio Assíncrono T
 
 ---
 
+## 🌐 Deploy em Produção
+
+- **Frontend**: https://descomplica-frontend.vercel.app/
+- **Backend API**: https://descomplica-backend.fly.dev
+- **Swagger Docs**: https://descomplica-backend.fly.dev/api
+
+---
+
 ## 🎥 Apresentação do Projeto
 
 [![Vídeo de Apresentação](https://dp828as6rrq5m.cloudfront.net/wp-content/uploads/2024/03/12091106/logo-verde.svg)](https://youtu.be/tCaFtWV5heg)
