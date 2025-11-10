@@ -4,6 +4,14 @@ Repositório do desafio técnico. Descrição completa em `Desafio Assíncrono T
 
 ---
 
+## 🎥 Apresentação do Projeto
+
+[![Vídeo de Apresentação](https://dp828as6rrq5m.cloudfront.net/wp-content/uploads/2024/03/12091106/logo-verde.svg)](https://youtu.be/tCaFtWV5heg)
+
+*Clique na imagem acima para assistir à demonstração completa do projeto*
+
+---
+
 ## 🚀 Início Rápido
 
 ### Pré-requisitos
